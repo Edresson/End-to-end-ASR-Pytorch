@@ -5,6 +5,9 @@ from src.audio import create_transform
 from torch.utils.data import DataLoader
 from torch.nn.utils.rnn import pad_sequence
 
+from importlib import import_module
+from traceback import format_exc
+
 # Batch size will be halfed if the longest wavefile surpasses threshold
 HALF_BATCHSIZE_AUDIO_LEN = 800
 # Note: Bucketing may cause random sampling to be biased (less sampled for those length > HALF_BATCHSIZE_AUDIO_LEN )
@@ -66,10 +69,16 @@ def create_dataset(tokenizer, ascending, name, path, bucketing, batch_size,
     ''' Interface for creating all kinds of dataset'''
 
     # Recognize corpus
-    if name.lower() == "librispeech":
+    try:
+        Dataset = import_module("corpus."+name.lower()+".Dataset")
+    except ModuleNotFoundError: 
+        raise NotImplementedError
+    except Exception:
+        print(format_exc())
+    '''if name.lower() == "librispeech":
         from corpus.librispeech import LibriDataset as Dataset
     else:
-        raise NotImplementedError
+        raise NotImplementedError'''
 
     # Create dataset
     if train_split is not None:
@@ -107,10 +116,18 @@ def create_textset(tokenizer, train_split, dev_split, name, path, bucketing, bat
     msg_list = []
 
     # Recognize corpus
+    try:
+        Dataset = import_module("corpus."+name.lower()+".TextDataset")
+    except ModuleNotFoundError: 
+        raise NotImplementedError
+    except Exception:
+        print(format_exc())
+
+    '''# Recognize corpus
     if name.lower() == "librispeech":
         from corpus.librispeech import LibriTextDataset as Dataset
     else:
-        raise NotImplementedError
+        raise NotImplementedError'''
 
     # Create dataset
     bucket_size = batch_size if bucketing else 1

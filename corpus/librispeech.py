@@ -25,7 +25,7 @@ def read_text(file):
                 return line[:-1].split(' ', 1)[1]
 
 
-class LibriDataset(Dataset):
+class Dataset(Dataset):
     def __init__(self, path, split, tokenizer, bucket_size, ascending=False):
         # Setup
         self.path = path
@@ -61,7 +61,7 @@ class LibriDataset(Dataset):
         return len(self.file_list)
 
 
-class LibriTextDataset(Dataset):
+class TextDataset(Dataset):
     def __init__(self, path, split, tokenizer, bucket_size):
         # Setup
         self.path = path
